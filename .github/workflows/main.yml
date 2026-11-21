@@ -27,6 +27,7 @@ jobs:
         id: tests
         background: true
         run: mise run test
+        if: ${{ failure() }}
       - name: Lint
         run: mise run lint
       - name: Wait for tests
