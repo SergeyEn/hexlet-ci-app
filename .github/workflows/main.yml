@@ -25,7 +25,6 @@ jobs:
       - run: mise run setup
       - name: Test
         id: tests
-        background: true
         run: mise run test
         if: ${{ failure() }}
       - name: Lint
