@@ -25,8 +25,11 @@ jobs:
       - run: mise run setup
       - name: Test
         id: tests
+        background: true
         run: mise run test
+      - name: Explain failure
         if: ${{ failure() }}
+        run: echo 'A check failed. Open the first failed step and inspect its log.'
       - name: Lint
         run: mise run lint
       - name: Wait for tests
