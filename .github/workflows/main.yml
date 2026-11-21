@@ -65,7 +65,7 @@ jobs:
       - name: Show run information
         env:
           LABEL: ${{ vars.CI_LABEL || 'trainig' }}
-          run: printf '%s\n' "$LABEL"
+        run: printf '%s\n' "$LABEL"
       - name: Manual run information
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo 'This step was requested manually'
