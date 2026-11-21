@@ -59,9 +59,9 @@ jobs:
       - name: Show step value
         env:
           CHECK_LABEL: local-step
-        run: printf '%\n' "$CHECK_LABEL"
+        run: printf '%s\n' "$CHECK_LABEL"
       - name: Show workflow value again
-        run: printf '%\n' "$CHECK_LABEL"
+        run: printf '%s\n' "$CHECK_LABEL"
       - name: Manual run information
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo 'This step was requested manually'
