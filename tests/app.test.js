@@ -1,4 +1,4 @@
-const { setupStrapi, cleanupStrapi } = require("./helpers/strapi.jsd");
+const { setupStrapi, cleanupStrapi } = require("./helpers/strapi.js");
 
 beforeAll(async () => {
   await setupStrapi();
