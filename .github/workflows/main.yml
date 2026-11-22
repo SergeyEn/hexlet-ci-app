@@ -48,7 +48,7 @@ jobs:
       - name: Wait for tests
         wait: tests
   inspect-report:
-    needs: test
+    needs: lint
     runs-on: ubuntu-26.04
     steps:
       - uses: action/download-artifact@v8
