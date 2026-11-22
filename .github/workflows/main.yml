@@ -76,13 +76,6 @@ jobs:
   secret:
     runs-on: ubuntu-26.04
     steps:
-      - name: Check training secret
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        env:
-          TRAINING_SECRET: ${{ secrets.TRAINING_SECRET }}
-        run: |
-          test -n "$TRAINING_SECRET"
-          echo 'Training secret is available'
       - name: Read repository information
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
