@@ -53,10 +53,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8.0.2
         with:
-          name: ${{ needs.test.outputs.report-name }}
+          name: ${{ needs.lint.outputs.report-name }}
           path: received-report
       - name: Check downloaded report
-        run: test -s received-report/test-result.xml
+        run: test -s received-report/test-results.xml
 
   demo-server:
     runs-on: ubuntu-26.04
