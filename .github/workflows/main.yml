@@ -72,3 +72,18 @@ jobs:
       - name: Manual run information
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: echo 'This step was requested manually'
+
+  secret:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Check training secret
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          TRAINING_SECRET: ${{ secret.TRAINING_SECRET }}
+        run: |
+          test -n "$TRAINING_SECRET"
+          echo 'Training secret is available'
+      - name: Read repository information
+        env:
+          GH_TOKEN: ${{ secret.GITHUB_TOKEN }}
+        run: gh api "repos/$GITHUB_REPOSITORY" --jq .full_name
