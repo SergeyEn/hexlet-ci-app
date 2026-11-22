@@ -19,7 +19,12 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-26.04
+    outputs:
+      report-name: ${{ steps.report-meta.outputs.name }}
     steps:
+      - name: Define report name
+        id: report-meta
+        run: echo 'name=test-report' >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v7.0.1
       - uses: jdx/mise-action@v5.2.10
       - run: mise run setup
@@ -27,6 +32,14 @@ jobs:
         id: tests
         background: true
         run: mise run test
+      - name: Save test report
+        if: ${{ !cancelled() }}
+        uses: action/upload-artifact@v7
+        with:
+          name: ${{ steps.report-meta.outputs.name }}
+          path: reports/test-result.xml
+          retention-days: 7 
+          if-no-files-found: error
       - name: Explain failure
         if: ${{ failure() }}
         run: echo 'A check failed. Open the first failed step and inspect its log.'
@@ -34,6 +47,16 @@ jobs:
         run: mise run lint
       - name: Wait for tests
         wait: tests
+  inspect-report:
+    needs: tests
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: action/download-artifact@v8
+        with:
+          name: ${{ needs.test.outputs.report-name }}
+          path: received-report
+      - name: Check downloaded report
+        run: test -s received-report/test-result.xml
 
   demo-server:
     runs-on: ubuntu-26.04
