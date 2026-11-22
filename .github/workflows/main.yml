@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ steps.report-meta.outputs.name }}
-          path: reports/test-result.xml
+          path: reports/test-results.xml
           retention-days: 7 
           if-no-files-found: error
       - name: Explain failure
