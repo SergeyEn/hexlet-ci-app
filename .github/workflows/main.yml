@@ -14,6 +14,8 @@ concurrency:
 permissions:
       contents: read
 
+env: 
+  CHECK_LABEL: training
 jobs:
   lint:
     runs-on: ubuntu-26.04
@@ -25,6 +27,9 @@ jobs:
         id: tests
         background: true
         run: mise run test
+      - name: Explain failure
+        if: ${{ failure() }}
+        run: echo 'A check failed. Open the first failed step and inspect its log.'
       - name: Lint
         run: mise run lint
       - name: Wait for tests
@@ -46,3 +51,37 @@ jobs:
         run: test "$(curl --fail --silent http://127.0.0.1:3000/)" = ready
       - name: Stop demo server
         cancel: server
+
+  inspect:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Show workflow values
+        run: |
+          printf '%s\n' "$CHECK_LABEL"
+          printf '%s\n' "$GITHUB_WORKFLOW"
+      - name: Show step value
+        env:
+          CHECK_LABEL: local-step
+        run: printf '%s\n' "$CHECK_LABEL"
+      - name: Show workflow value again
+        run: printf '%s\n' "$CHECK_LABEL"
+      - name: Show run information
+        env:
+          LABEL: ${{ vars.CI_LABEL || 'trainig' }}
+        run: printf '%s\n' "$LABEL"
+      - name: Manual run information
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo 'This step was requested manually'
+
+  secret:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Read repository information
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api "repos/$GITHUB_REPOSITORY" --jq .full_name
+      - name: Show pull request title
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$PR_TITLE"
