@@ -52,7 +52,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: ${{ steps.report-meta.outputs.name }}
+          name: test-report-${{ matrix.os }}
           path: reports/test-results.xml
           retention-days: 7 
           if-no-files-found: error
