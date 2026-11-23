@@ -19,6 +19,7 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-26.04
+    timeout-minutes: 15
     outputs:
       report-name: ${{ steps.report-meta.outputs.name }}
     steps:
@@ -37,6 +38,7 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -49,7 +51,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: jdx/mise-action@v5.3.0
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6.1.0
+        id: dependencies
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-${{ runner.arch }}-
       - run: mise run setup
+      - name: Show cache result
+        env:
+          CACHE_HIT: ${{ steps.dependencies.outputs.cache-hit }}
+        run: printf 'Exact cache hit = %s\n' "$CACHE_HIT"
       - name: Test
         run: mise run test
       - name: Save test report
