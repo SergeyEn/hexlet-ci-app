@@ -139,3 +139,18 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: printf '%s\n' "$PR_TITLE"
+
+  verify:
+    name: CI result
+    needs: [lint, test]
+    if: ${{ always() }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 2
+    steps:
+      - name: Require all checks to succeed
+        env:
+          LINT_RESULT: ${{ needs.lint.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          test "$LINT_RESULT" = success
+          test "$TEST_RESULT" = success
