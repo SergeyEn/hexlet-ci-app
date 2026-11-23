@@ -59,13 +59,13 @@ jobs:
           key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-${{ runner.arch }}-
+        save-always: true
       - run: mise run setup
       - name: Show cache result
         env:
           CACHE_HIT: ${{ steps.dependencies.outputs.cache-hit }}
         run: printf 'Exact cache hit = %s\n' "$CACHE_HIT"
       - name: Test
-        cache-mode: none
         run: mise run test
       - name: Save test report
         if: ${{ !cancelled() }}
