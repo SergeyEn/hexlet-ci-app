@@ -19,6 +19,7 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-26.04
+    timeout-minutes: 15
     outputs:
       report-name: ${{ steps.report-meta.outputs.name }}
     steps:
