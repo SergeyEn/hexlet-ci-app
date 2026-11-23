@@ -65,6 +65,7 @@ jobs:
           CACHE_HIT: ${{ steps.dependencies.outputs.cache-hit }}
         run: printf 'Exact cache hit = %s\n' "$CACHE_HIT"
       - name: Test
+        cache-mode: none
         run: mise run test
       - name: Save test report
         if: ${{ !cancelled() }}
